@@ -14,15 +14,12 @@ import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
-console.log("Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME);
-console.log("API Key:", process.env.CLOUDINARY_API_KEY);
-console.log("API Secret:", process.env.CLOUDINARY_API_SECRET);
 
 connectDB();
 
 const app = express();
 
-app.use(cors({origin: "https://ecommerce-app-gilt-nine.vercel.app",
+app.use(cors({origin: "https://ecommerce-app-git-main-dommarajujeevanas-projects.vercel.app",
     credentials: true,}));
 app.use(express.json());
 
