@@ -1,3 +1,6 @@
+deplyed:  ecommerce-app-git-main-dommarajujeevanas-projects.vercel.app
+
+
 git remote add origin https://github.com/DommarajuJeevana/Ecommerce-app.git React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
