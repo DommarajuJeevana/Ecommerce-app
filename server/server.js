@@ -22,7 +22,7 @@ connectDB();
 
 const app = express();
 
-app.use(cors({origin: "ecommerce-app-git-main-dommarajujeevanas-projects.vercel.app",
+app.use(cors({origin: "ecommerce-app-gilt-nine.vercel.app",
     credentials: true,}));
 app.use(express.json());
 
