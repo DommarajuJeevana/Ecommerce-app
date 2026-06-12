@@ -1,4 +1,4 @@
-deployed:  ecommerce-app-git-main-dommarajujeevanas-projects.vercel.app
+deployed:  https://ecommerce-app-git-main-dommarajujeevanas-projects.vercel.app
 
 
 git remote add origin https://github.com/DommarajuJeevana/Ecommerce-app.git React + Vite
