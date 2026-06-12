@@ -25,7 +25,7 @@ function ProductDetails() {
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/api/products/${id}`
+        `https://ecommerce-app-otze.onrender.com/api/products/${id}`
       );
 
       setProduct(data);
@@ -37,7 +37,7 @@ function ProductDetails() {
   const fetchReviews = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/api/reviews/${id}`
+        `https://ecommerce-app-otze.onrender.com/api/reviews/${id}`
       );
 
       setReviews(data);
@@ -53,7 +53,7 @@ function ProductDetails() {
       );
 
       await axios.post(
-        "http://localhost:5000/api/cart",
+        "https://ecommerce-app-otze.onrender.com/api/cart",
         {
           productId: product._id,
           quantity: 1,
@@ -81,7 +81,7 @@ function ProductDetails() {
       );
 
       await axios.post(
-        "http://localhost:5000/api/wishlist",
+        "https://ecommerce-app-otze.onrender.com/api/wishlist",
         {
           productId: product._id,
         },
@@ -110,7 +110,7 @@ function ProductDetails() {
       );
 
       await axios.post(
-        `http://localhost:5000/api/reviews/${id}`,
+        `https://ecommerce-app-otze.onrender.com/api/reviews/${id}`,
         {
           rating,
           comment,

@@ -14,7 +14,7 @@ function AdminOrders() {
 
   const fetchOrders = async () => {
     const { data } = await axios.get(
-      "http://localhost:5000/api/orders",
+      "https://ecommerce-app-otze.onrender.com/api/orders",
       {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
@@ -30,7 +30,7 @@ function AdminOrders() {
     status
   ) => {
     await axios.put(
-      `http://localhost:5000/api/orders/${id}`,
+      `https://ecommerce-app-otze.onrender.com/api/orders/${id}`,
       { status },
       {
         headers: {

@@ -16,7 +16,7 @@ function Orders() {
   const fetchOrders = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:5000/api/orders/myorders",
+        "https://ecommerce-app-otze.onrender.com/api/orders/myorders",
         {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,

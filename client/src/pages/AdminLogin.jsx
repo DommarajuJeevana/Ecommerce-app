@@ -17,7 +17,7 @@ function AdminLogin() {
     try {
       const { data } =
         await axios.post(
-          "http://localhost:5000/api/auth/login",
+          "https://ecommerce-app-otze.onrender.com/api/auth/login",
           {
             email,
             password,

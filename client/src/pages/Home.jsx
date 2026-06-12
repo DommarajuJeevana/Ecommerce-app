@@ -17,7 +17,7 @@ function Home() {
   ) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/api/products?keyword=${searchKeyword}&category=${searchCategory}`
+        `https://ecommerce-app-otze.onrender.com/api/products?keyword=${searchKeyword}&category=${searchCategory}`
       );
 
       setProducts(data.products);

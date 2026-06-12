@@ -16,7 +16,7 @@ function Wishlist() {
   const fetchWishlist = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:5000/api/wishlist",
+        "https://ecommerce-app-otze.onrender.com/api/wishlist",
         {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
@@ -32,7 +32,7 @@ function Wishlist() {
 
   const removeItem = async (id) => {
     await axios.delete(
-      `http://localhost:5000/api/wishlist/${id}`,
+      `https://ecommerce-app-otze.onrender.com/api/wishlist/${id}`,
       {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
@@ -45,7 +45,7 @@ function Wishlist() {
 
   const moveToCart = async (id) => {
     await axios.post(
-      `http://localhost:5000/api/wishlist/move/${id}`,
+      `https://ecommerce-app-otze.onrender.com/api/wishlist/move/${id}`,
       {},
       {
         headers: {

@@ -15,7 +15,7 @@ function AdminUsers() {
 
   const fetchUsers = async () => {
     const { data } = await axios.get(
-      "http://localhost:5000/api/users",
+      "https://ecommerce-app-otze.onrender.com/api/users",
       {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
@@ -28,7 +28,7 @@ function AdminUsers() {
 
   const deleteUser = async (id) => {
     await axios.delete(
-      `http://localhost:5000/api/users/${id}`,
+      `https://ecommerce-app-otze.onrender.com/api/users/${id}`,
       {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,

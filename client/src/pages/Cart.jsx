@@ -15,7 +15,7 @@ function Cart() {
   const fetchCart = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:5000/api/cart",
+        "https://ecommerce-app-otze.onrender.com/api/cart",
         {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
@@ -32,7 +32,7 @@ function Cart() {
   const removeItem = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/cart/${id}`,
+        `https://ecommerce-app-otze.onrender.com/api/cart/${id}`,
         {
           headers: {
             Authorization: `Bearer ${userInfo.token}`,
@@ -49,7 +49,7 @@ function Cart() {
   const placeOrder = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/orders",
+        "https://ecommerce-app-otze.onrender.com/api/orders",
         {},
         {
           headers: {
