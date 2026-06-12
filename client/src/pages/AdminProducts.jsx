@@ -1,32 +1,17 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api";
 
 function AdminProducts() {
-  const [products, setProducts] =
-    useState([]);
+  const [products, setProducts] = useState([]);
 
-  const [name, setName] =
-    useState("");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [stock, setStock] = useState("");
+  const [image, setImage] = useState("");
 
-  const [description, setDescription] =
-    useState("");
-
-  const [price, setPrice] =
-    useState("");
-
-  const [category, setCategory] =
-    useState("");
-
-  const [stock, setStock] =
-    useState("");
-
-  const [image, setImage] =
-    useState(null);
-
-  const userInfo =
-    JSON.parse(
-      localStorage.getItem("userInfo")
-    ) || {};
+  const userInfo = JSON.parse(localStorage.getItem("userInfo")) || {};
 
   useEffect(() => {
     fetchProducts();
@@ -34,79 +19,61 @@ function AdminProducts() {
 
   const fetchProducts = async () => {
     try {
-      const { data } =
-        await axios.get(
-          "http://localhost:5000/api/products"
-        );
+      const { data } = await API.get("/products");
 
-      setProducts(
-        data.products || []
-      );
+      setProducts(data.products || []);
     } catch (error) {
-      console.log(error);
+      console.log(error.response?.data?.message || error.message);
     }
   };
 
   const addProduct = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    await axios.post(
-      "http://localhost:5000/api/products",
-      {
-        name,
-        description,
-        price,
-        category,
-        stock,
-        image,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      }
-    );
-
-    setName("");
-    setDescription("");
-    setPrice("");
-    setCategory("");
-    setStock("");
-    setImage("");
-
-    fetchProducts();
-
-    alert("Product Added Successfully");
-  } catch (error) {
-    alert(
-      error.response?.data?.message ||
-      error.message
-    );
-  }
-};
-
-  const deleteProduct = async (
-    id
-  ) => {
     try {
-      await axios.delete(
-        `http://localhost:5000/api/products/${id}`,
+      await API.post(
+        "/products",
+        {
+          name,
+          description,
+          price,
+          category,
+          stock,
+          image,
+        },
         {
           headers: {
-            Authorization:
-              `Bearer ${userInfo.token}`,
+            Authorization: `Bearer ${userInfo.token}`,
           },
         }
       );
 
+      setName("");
+      setDescription("");
+      setPrice("");
+      setCategory("");
+      setStock("");
+      setImage("");
+
+      fetchProducts();
+
+      alert("Product Added Successfully");
+    } catch (error) {
+      alert(error.response?.data?.message || error.message);
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    try {
+      await API.delete(`/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+
       fetchProducts();
     } catch (error) {
-      alert(
-        error.response?.data
-          ?.message ||
-          error.message
-      );
+      alert(error.response?.data?.message || error.message);
     }
   };
 
@@ -124,11 +91,7 @@ function AdminProducts() {
           type="text"
           placeholder="Product Name"
           value={name}
-          onChange={(e) =>
-            setName(
-              e.target.value
-            )
-          }
+          onChange={(e) => setName(e.target.value)}
           className="w-full border p-3 mb-3"
           required
         />
@@ -136,11 +99,7 @@ function AdminProducts() {
         <textarea
           placeholder="Description"
           value={description}
-          onChange={(e) =>
-            setDescription(
-              e.target.value
-            )
-          }
+          onChange={(e) => setDescription(e.target.value)}
           className="w-full border p-3 mb-3"
           required
         />
@@ -149,64 +108,31 @@ function AdminProducts() {
           type="number"
           placeholder="Price"
           value={price}
-          onChange={(e) =>
-            setPrice(
-              e.target.value
-            )
-          }
+          onChange={(e) => setPrice(e.target.value)}
           className="w-full border p-3 mb-3"
           required
         />
 
         <select
           value={category}
-          onChange={(e) =>
-            setCategory(e.target.value)
-          }
+          onChange={(e) => setCategory(e.target.value)}
           className="w-full border p-3 mb-3"
         >
-          <option value="">
-            Select Category
-          </option>
-
-          <option value="Flowers">
-            Flowers
-          </option>
-
-          <option value="Bouquets">
-            Bouquets
-          </option>
-
-          <option value="Plants">
-            Plants
-          </option>
-
-          <option value="Gifts">
-            Gifts
-          </option>
-
-          <option value="Mobiles">
-            Mobiles
-          </option>
-
-          <option value="Electronics">
-            Electronics
-          </option>
-
-          <option value="Fashion">
-            Fashion
-          </option>
+          <option value="">Select Category</option>
+          <option value="Flowers">Flowers</option>
+          <option value="Bouquets">Bouquets</option>
+          <option value="Plants">Plants</option>
+          <option value="Gifts">Gifts</option>
+          <option value="Mobiles">Mobiles</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Fashion">Fashion</option>
         </select>
 
         <input
           type="number"
           placeholder="Stock"
           value={stock}
-          onChange={(e) =>
-            setStock(
-              e.target.value
-            )
-          }
+          onChange={(e) => setStock(e.target.value)}
           className="w-full border p-3 mb-3"
           required
         />
@@ -215,9 +141,7 @@ function AdminProducts() {
           type="text"
           placeholder="Image URL"
           value={image}
-          onChange={(e) =>
-            setImage(e.target.value)
-          }
+          onChange={(e) => setImage(e.target.value)}
           className="w-full border p-3 mb-3"
         />
 
@@ -232,65 +156,29 @@ function AdminProducts() {
       <table className="w-full bg-white shadow rounded">
         <thead>
           <tr className="bg-blue-700 text-white">
-            <th className="p-3">
-              Name
-            </th>
-
-            <th className="p-3">
-              Price
-            </th>
-
-            <th className="p-3">
-              Stock
-            </th>
-
-            <th className="p-3">
-              Actions
-            </th>
+            <th className="p-3">Name</th>
+            <th className="p-3">Price</th>
+            <th className="p-3">Stock</th>
+            <th className="p-3">Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          {products.map(
-            (product) => (
-              <tr
-                key={
-                  product._id
-                }
-                className="border-b"
-              >
-                <td className="p-3">
-                  {product.name}
-                </td>
-
-                <td className="p-3">
-                  ₹
-                  {
-                    product.price
-                  }
-                </td>
-
-                <td className="p-3">
-                  {
-                    product.stock
-                  }
-                </td>
-
-                <td className="p-3">
-                  <button
-                    onClick={() =>
-                      deleteProduct(
-                        product._id
-                      )
-                    }
-                    className="bg-red-500 text-white px-4 py-2 rounded"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            )
-          )}
+          {products.map((product) => (
+            <tr key={product._id} className="border-b">
+              <td className="p-3">{product.name}</td>
+              <td className="p-3">₹{product.price}</td>
+              <td className="p-3">{product.stock}</td>
+              <td className="p-3">
+                <button
+                  onClick={() => deleteProduct(product._id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

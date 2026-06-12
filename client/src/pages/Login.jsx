@@ -1,11 +1,10 @@
 import { useState, useContext } from "react";
-import axios from "axios";
+import API from "../api";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 
 function Login() {
   const navigate = useNavigate();
-
   const { login } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
@@ -15,28 +14,21 @@ function Login() {
     e.preventDefault();
 
     try {
-      const { data } = await axios.post(
-        "https://ecommerce-app-otze.onrender.com/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const { data } = await API.post("/auth/login", {
+        email,
+        password,
+      });
 
       login(data);
 
       navigate("/");
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Login Failed"
-      );
+      alert(error.response?.data?.message || "Login Failed");
     }
   };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
-
       <form
         onSubmit={submitHandler}
         className="bg-white p-8 rounded-lg shadow-md w-96"
@@ -50,9 +42,7 @@ function Login() {
           placeholder="Email"
           className="w-full border p-3 mb-4 rounded"
           value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
@@ -60,42 +50,29 @@ function Login() {
           placeholder="Password"
           className="w-full border p-3 mb-4 rounded"
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button
-          className="w-full bg-blue-700 text-white py-3 rounded"
-        >
+        <button className="w-full bg-blue-700 text-white py-3 rounded">
           Login
         </button>
 
         <div className="mt-5 text-center">
-
           <p>
             New User?{" "}
-            <Link
-              to="/register"
-              className="text-blue-700"
-            >
+            <Link to="/register" className="text-blue-700">
               Register
             </Link>
           </p>
 
           <p className="mt-2">
             Admin?{" "}
-            <Link
-              to="/admin-login"
-              className="text-blue-700"
-            >
+            <Link to="/admin-login" className="text-blue-700">
               Admin Login
             </Link>
           </p>
-
         </div>
       </form>
-
     </div>
   );
 }

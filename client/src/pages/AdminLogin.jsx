@@ -1,50 +1,37 @@
 import { useState } from "react";
-import axios from "axios";
+import API from "../api";
 import { useNavigate } from "react-router-dom";
 
 function AdminLogin() {
   const navigate = useNavigate();
 
-  const [email, setEmail] =
-    useState("");
-
-  const [password, setPassword] =
-    useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      const { data } =
-        await axios.post(
-          "https://ecommerce-app-otze.onrender.com/api/auth/login",
-          {
-            email,
-            password,
-          }
-        );
+      const { data } = await API.post("/auth/login", {
+        email,
+        password,
+      });
 
       if (data.role !== "admin") {
         alert("Not Admin");
         return;
       }
 
-      localStorage.setItem(
-        "userInfo",
-        JSON.stringify(data)
-      );
+      localStorage.setItem("userInfo", JSON.stringify(data));
 
       navigate("/admin");
     } catch (error) {
-      alert(
-        error.response?.data?.message
-      );
+      alert(error.response?.data?.message);
     }
   };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
-
       <form
         onSubmit={submitHandler}
         className="bg-white p-8 rounded-lg shadow-lg w-96"
@@ -58,9 +45,7 @@ function AdminLogin() {
           placeholder="Email"
           className="w-full border p-3 mb-4 rounded"
           value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
@@ -68,18 +53,13 @@ function AdminLogin() {
           placeholder="Password"
           className="w-full border p-3 mb-4 rounded"
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button
-          className="w-full bg-blue-700 text-white py-3 rounded"
-        >
+        <button className="w-full bg-blue-700 text-white py-3 rounded">
           Login
         </button>
       </form>
-
     </div>
   );
 }

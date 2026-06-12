@@ -1,21 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import API from "../api";
 
 function ProductDetails() {
   const { id } = useParams();
 
-  const [product, setProduct] =
-    useState(null);
-
-  const [reviews, setReviews] =
-    useState([]);
-
-  const [rating, setRating] =
-    useState(5);
-
-  const [comment, setComment] =
-    useState("");
+  const [product, setProduct] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     fetchProduct();
@@ -24,36 +17,28 @@ function ProductDetails() {
 
   const fetchProduct = async () => {
     try {
-      const { data } = await axios.get(
-        `https://ecommerce-app-otze.onrender.com/api/products/${id}`
-      );
-
+      const { data } = await API.get(`/products/${id}`);
       setProduct(data);
     } catch (error) {
-      console.log(error);
+      console.log(error.response?.data?.message || error.message);
     }
   };
 
   const fetchReviews = async () => {
     try {
-      const { data } = await axios.get(
-        `https://ecommerce-app-otze.onrender.com/api/reviews/${id}`
-      );
-
+      const { data } = await API.get(`/reviews/${id}`);
       setReviews(data);
     } catch (error) {
-      console.log(error);
+      console.log(error.response?.data?.message || error.message);
     }
   };
 
   const addToCart = async () => {
     try {
-      const userInfo = JSON.parse(
-        localStorage.getItem("userInfo")
-      );
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-      await axios.post(
-        "https://ecommerce-app-otze.onrender.com/api/cart",
+      await API.post(
+        "/cart",
         {
           productId: product._id,
           quantity: 1,
@@ -67,21 +52,16 @@ function ProductDetails() {
 
       alert("Added To Cart");
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Failed"
-      );
+      alert(error.response?.data?.message || "Failed");
     }
   };
 
   const addToWishlist = async () => {
     try {
-      const userInfo = JSON.parse(
-        localStorage.getItem("userInfo")
-      );
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-      await axios.post(
-        "https://ecommerce-app-otze.onrender.com/api/wishlist",
+      await API.post(
+        "/wishlist",
         {
           productId: product._id,
         },
@@ -94,10 +74,7 @@ function ProductDetails() {
 
       alert("Added To Wishlist");
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Failed"
-      );
+      alert(error.response?.data?.message || "Failed");
     }
   };
 
@@ -105,12 +82,10 @@ function ProductDetails() {
     e.preventDefault();
 
     try {
-      const userInfo = JSON.parse(
-        localStorage.getItem("userInfo")
-      );
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-      await axios.post(
-        `https://ecommerce-app-otze.onrender.com/api/reviews/${id}`,
+      await API.post(
+        `/reviews/${id}`,
         {
           rating,
           comment,
@@ -130,10 +105,7 @@ function ProductDetails() {
       fetchReviews();
       fetchProduct();
     } catch (error) {
-      alert(
-        error.response?.data?.message ||
-          "Failed"
-      );
+      alert(error.response?.data?.message || "Failed");
     }
   };
 
@@ -181,9 +153,7 @@ function ProductDetails() {
             ⭐ {product.rating?.toFixed(1)}
           </p>
 
-          <p>
-            {product.numReviews} Reviews
-          </p>
+          <p>{product.numReviews} Reviews</p>
 
           <div className="flex gap-4 mt-8">
             <button
@@ -211,34 +181,20 @@ function ProductDetails() {
         <form onSubmit={submitReview}>
           <select
             value={rating}
-            onChange={(e) =>
-              setRating(e.target.value)
-            }
+            onChange={(e) => setRating(e.target.value)}
             className="border p-3 w-full mb-3"
           >
-            <option value="5">
-              5 Stars
-            </option>
-            <option value="4">
-              4 Stars
-            </option>
-            <option value="3">
-              3 Stars
-            </option>
-            <option value="2">
-              2 Stars
-            </option>
-            <option value="1">
-              1 Star
-            </option>
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="2">2 Stars</option>
+            <option value="1">1 Star</option>
           </select>
 
           <textarea
             placeholder="Write Review"
             value={comment}
-            onChange={(e) =>
-              setComment(e.target.value)
-            }
+            onChange={(e) => setComment(e.target.value)}
             className="border p-3 w-full mb-3"
             required
           />

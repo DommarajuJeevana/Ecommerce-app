@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api";
 import ProductCard from "../components/ProductCard.jsx";
 
 function Home() {
@@ -11,18 +11,15 @@ function Home() {
     fetchProducts(keyword, category);
   }, [keyword, category]);
 
-  const fetchProducts = async (
-    searchKeyword = "",
-    searchCategory = ""
-  ) => {
+  const fetchProducts = async (searchKeyword = "", searchCategory = "") => {
     try {
-      const { data } = await axios.get(
-        `https://ecommerce-app-otze.onrender.com/api/products?keyword=${searchKeyword}&category=${searchCategory}`
+      const { data } = await API.get(
+        `/products?keyword=${searchKeyword}&category=${searchCategory}`
       );
 
       setProducts(data.products);
     } catch (error) {
-      console.log(error);
+      console.log(error.response?.data?.message || error.message);
     }
   };
 
@@ -34,50 +31,23 @@ function Home() {
           type="text"
           placeholder="Search Products..."
           value={keyword}
-          onChange={(e) =>
-            setKeyword(e.target.value)
-          }
+          onChange={(e) => setKeyword(e.target.value)}
           className="border p-3 flex-1 rounded"
         />
 
         <select
           value={category}
-          onChange={(e) =>
-            setCategory(e.target.value)
-          }
+          onChange={(e) => setCategory(e.target.value)}
           className="border p-3 rounded"
         >
-          <option value="">
-            All Categories
-          </option>
-
-          <option value="Flowers">
-            Flowers
-          </option>
-
-          <option value="Bouquets">
-            Bouquets
-          </option>
-
-          <option value="Plants">
-            Plants
-          </option>
-
-          <option value="Gifts">
-            Gifts
-          </option>
-
-          <option value="Mobiles">
-            Mobiles
-          </option>
-
-          <option value="Electronics">
-            Electronics
-          </option>
-
-          <option value="Fashion">
-            Fashion
-          </option>
+          <option value="">All Categories</option>
+          <option value="Flowers">Flowers</option>
+          <option value="Bouquets">Bouquets</option>
+          <option value="Plants">Plants</option>
+          <option value="Gifts">Gifts</option>
+          <option value="Mobiles">Mobiles</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Fashion">Fashion</option>
         </select>
 
       </div>

@@ -1,45 +1,45 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api";
 
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
 
-  const userInfo = JSON.parse(
-    localStorage.getItem("userInfo")
-  );
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
-    const { data } = await axios.get(
-      "https://ecommerce-app-otze.onrender.com/api/orders",
-      {
+    try {
+      const { data } = await API.get("/orders", {
         headers: {
           Authorization: `Bearer ${userInfo.token}`,
         },
-      }
-    );
+      });
 
-    setOrders(data);
+      setOrders(data);
+    } catch (error) {
+      console.log(error.response?.data?.message);
+    }
   };
 
-  const updateStatus = async (
-    id,
-    status
-  ) => {
-    await axios.put(
-      `https://ecommerce-app-otze.onrender.com/api/orders/${id}`,
-      { status },
-      {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      }
-    );
+  const updateStatus = async (id, status) => {
+    try {
+      await API.put(
+        `/orders/${id}`,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
 
-    fetchOrders();
+      fetchOrders();
+    } catch (error) {
+      console.log(error.response?.data?.message);
+    }
   };
 
   return (
@@ -53,26 +53,13 @@ function AdminOrders() {
           key={order._id}
           className="bg-white p-5 rounded shadow mb-4"
         >
-          <p>
-            User: {order.user?.name}
-          </p>
-
-          <p>
-            Total: ₹{order.totalPrice}
-          </p>
-
-          <p>
-            Status: {order.orderStatus}
-          </p>
+          <p>User: {order.user?.name}</p>
+          <p>Total: ₹{order.totalPrice}</p>
+          <p>Status: {order.orderStatus}</p>
 
           <div className="flex gap-3 mt-4">
             <button
-              onClick={() =>
-                updateStatus(
-                  order._id,
-                  "Shipped"
-                )
-              }
+              onClick={() => updateStatus(order._id, "Shipped")}
               className="bg-yellow-400 px-4 py-2 rounded"
             >
               Shipped
@@ -80,10 +67,7 @@ function AdminOrders() {
 
             <button
               onClick={() =>
-                updateStatus(
-                  order._id,
-                  "Delivered"
-                )
+                updateStatus(order._id, "Delivered")
               }
               className="bg-green-500 text-white px-4 py-2 rounded"
             >
