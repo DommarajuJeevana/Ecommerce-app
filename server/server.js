@@ -19,8 +19,15 @@ connectDB();
 
 const app = express();
 
-app.use(cors({origin: "https://ecommerce-app-git-main-dommarajujeevanas-projects.vercel.app",
-    credentials: true,}));
+app.use(
+  cors({
+    origin: [
+      "https://ecommerce-app-gilt-nine.vercel.app",
+      "https://ecommerce-app-git-main-dommarajujeevanas-projects.vercel.app"
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
