@@ -1,4 +1,4 @@
-# React + Vite
+git remote add origin https://github.com/DommarajuJeevana/Ecommerce-app.git React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
