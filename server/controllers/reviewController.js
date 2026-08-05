@@ -1,102 +1,71 @@
-import Review from "../models/Review.js";
-import Product from "../models/Product.js";
-import Order from "../models/Order.js";
+const Product = require("../models/Product");
 
-// Add Review
-export const addReview = async (
-  req,
-  res
-) => {
+// @route POST /api/products/:productId/reviews
+const addReview = async (req, res, next) => {
   try {
-    const { rating, comment } =
-      req.body;
+    const { rating, comment } = req.body;
+    const product = await Product.findById(req.params.productId);
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
-    const productId =
-      req.params.productId;
-
-    const purchased =
-      await Order.findOne({
-        user: req.user._id,
-        "orderItems.product":
-          productId,
-      });
-
-    if (!purchased) {
-      return res.status(403).json({
-        message:
-          "Purchase required before reviewing",
-      });
+    const alreadyReviewed = product.reviews.some((r) => r.user.toString() === req.user._id.toString());
+    if (alreadyReviewed) {
+      return res.status(400).json({ message: "You have already reviewed this product" });
     }
 
-    const existing =
-      await Review.findOne({
-        user: req.user._id,
-        product: productId,
-      });
+    product.reviews.push({ user: req.user._id, rating: Number(rating), comment });
+    product.recalculateRating();
+    await product.save();
 
-    if (existing) {
-      return res.status(400).json({
-        message:
-          "Review already submitted",
-      });
-    }
-
-    await Review.create({
-      user: req.user._id,
-      product: productId,
-      rating,
-      comment,
-    });
-
-    const reviews =
-      await Review.find({
-        product: productId,
-      });
-
-    const avg =
-      reviews.reduce(
-        (acc, item) =>
-          acc + item.rating,
-        0
-      ) / reviews.length;
-
-    await Product.findByIdAndUpdate(
-      productId,
-      {
-        rating: avg,
-        numReviews:
-          reviews.length,
-      }
-    );
-
-    res.status(201).json({
-      message:
-        "Review added successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(201).json({ message: "Review added" });
+  } catch (err) {
+    next(err);
   }
 };
 
-// Get Product Reviews
-export const getReviews =
-  async (req, res) => {
-    try {
-      const reviews =
-        await Review.find({
-          product:
-            req.params.productId,
-        }).populate(
-          "user",
-          "name"
-        );
+// @route PUT /api/products/:productId/reviews/:reviewId
+const updateReview = async (req, res, next) => {
+  try {
+    const { rating, comment } = req.body;
+    const product = await Product.findById(req.params.productId);
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
-      res.json(reviews);
-    } catch (error) {
-      res.status(500).json({
-        message: error.message,
-      });
+    const review = product.reviews.id(req.params.reviewId);
+    if (!review) return res.status(404).json({ message: "Review not found" });
+    if (review.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "You can only edit your own review" });
     }
-  };
+
+    review.rating = Number(rating);
+    review.comment = comment;
+    product.recalculateRating();
+    await product.save();
+
+    res.json({ message: "Review updated" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @route DELETE /api/products/:productId/reviews/:reviewId
+const deleteReview = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    const review = product.reviews.id(req.params.reviewId);
+    if (!review) return res.status(404).json({ message: "Review not found" });
+    if (review.user.toString() !== req.user._id.toString() && req.user.role !== "admin") {
+      return res.status(403).json({ message: "You can only delete your own review" });
+    }
+
+    review.deleteOne();
+    product.recalculateRating();
+    await product.save();
+
+    res.json({ message: "Review deleted" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { addReview, updateReview, deleteReview };

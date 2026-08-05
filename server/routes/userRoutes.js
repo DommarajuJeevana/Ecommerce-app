@@ -1,29 +1,10 @@
-import express from "express";
-
-import {
-  getUsers,
-  deleteUser,
-} from "../controllers/userController.js";
-
-import {
-  protect,
-  admin,
-} from "../middleware/authMiddleware.js";
-
+const express = require("express");
 const router = express.Router();
+const { protect } = require("../middleware/authMiddleware");
+const upload = require("../middleware/uploadMiddleware");
+const { updateProfile, uploadAvatar } = require("../controllers/userController");
 
-router.get(
-  "/",
-  protect,
-  admin,
-  getUsers
-);
+router.put("/profile", protect, updateProfile);
+router.post("/avatar", protect, upload.single("avatar"), uploadAvatar);
 
-router.delete(
-  "/:id",
-  protect,
-  admin,
-  deleteUser
-);
-
-export default router;
+module.exports = router;

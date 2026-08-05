@@ -1,122 +1,69 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
-function Navbar() {
-  const navigate = useNavigate();
-
-  const userInfo = JSON.parse(
-    localStorage.getItem("userInfo")
-  );
-
-  const logoutHandler = () => {
-    localStorage.removeItem("userInfo");
-    navigate("/login");
-    window.location.reload();
-  };
+const Navbar = () => {
+  const { user, logout } = useContext(AuthContext);
 
   return (
-    <nav className="bg-blue-700 text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <nav className="bg-gradient-to-r from-ink-900 via-ink-700 to-brand-700 text-white px-8 py-4 flex justify-between items-center shadow-lg">
+      <Link to="/" className="text-2xl font-bold">
+        🛒 E-Store
+      </Link>
 
-        <Link
-          to="/"
-          className="text-2xl font-bold"
-        >
-          ShopSphere
+      <div className="flex gap-6 items-center">
+        <Link className="hover:text-gray-300" to="/">
+          Home
         </Link>
 
-        <div className="flex items-center gap-8">
+        <Link className="hover:text-gray-300" to="/cart">
+          Cart
+        </Link>
 
-          {/* ADMIN NAVBAR */}
-          {userInfo?.role === "admin" && (
-            <>
-              <Link
-                to="/admin/products"
-                className="hover:text-yellow-300"
-              >
-                Products
-              </Link>
+        {user && (
+          <Link className="hover:text-gray-300" to="/orders">
+            Orders
+          </Link>
+        )}
 
-              <Link
-                to="/admin/orders"
-                className="hover:text-yellow-300"
-              >
-                Orders
-              </Link>
+        {user?.role === "admin" && (
+          <>
+            <Link to="/admin-products">Products</Link>
+            <Link to="/admin-orders">Admin</Link>
+          </>
+        )}
 
-              <Link
-                to="/admin/users"
-                className="hover:text-yellow-300"
-              >
-                Users
-              </Link>
-            </>
-          )}
-
-          {/* USER NAVBAR */}
-          {userInfo?.role === "user" && (
-            <>
-              <Link
-                to="/wishlist"
-                className="hover:text-yellow-300"
-              >
-                Wishlist
-              </Link>
-
-              <Link
-                to="/cart"
-                className="hover:text-yellow-300"
-              >
-                Cart
-              </Link>
-
-              <Link
-                to="/orders"
-                className="hover:text-yellow-300"
-              >
-                Orders
-              </Link>
-            </>
-          )}
-
-          {/* GUEST */}
-          {!userInfo && (
-            <>
-              <Link
-                to="/login"
-                className="bg-green-500 px-4 py-2 rounded"
-              >
+        {!user ? (
+          <>
+            <Link to="/login">
+              <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg">
                 Login
-              </Link>
-
-              <Link
-                to="/register"
-                className="bg-yellow-500 px-4 py-2 rounded text-black"
-              >
-                Register
-              </Link>
-            </>
-          )}
-
-          {/* LOGGED IN */}
-          {userInfo && (
-            <>
-              <span className="font-bold">
-                {userInfo.name}
-              </span>
-
-              <button
-                onClick={logoutHandler}
-                className="bg-red-500 px-4 py-2 rounded"
-              >
-                Logout
               </button>
-            </>
-          )}
+            </Link>
 
-        </div>
+            <Link to="/register">
+              <button className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg">
+                Register
+              </button>
+            </Link>
+          </>
+        ) : (
+          <>
+            <span className="text-gray-300">
+              {user.name}
+            </span>
+
+            <button
+              onClick={logout}
+              className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
+            >
+              Logout
+            </button>
+          </>
+        )}
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;
