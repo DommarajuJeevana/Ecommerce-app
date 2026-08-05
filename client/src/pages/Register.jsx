@@ -41,8 +41,18 @@ export default function Register() {
     e.preventDefault();
     if (!validate()) return;
     try {
-      await register({ name: form.name, email: form.email, phone: form.phone, password: form.password });
-      navigate("/");
+      const newUser = await register({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        password: form.password,
+      });
+
+      if (newUser.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch {
       /* toast handled in context */
     }

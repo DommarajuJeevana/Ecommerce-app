@@ -29,8 +29,16 @@ export default function Login() {
     e.preventDefault();
     if (!validate()) return;
     try {
-      await login(form.email, form.password, remember);
-      navigate(from, { replace: true });
+      const loggedInUser = await login(
+  form.email,
+  form.password
+    );
+
+    if (loggedInUser.role === "admin") {
+      navigate("/admin/dashboard");
+    } else {
+      navigate(from);
+    }
     } catch {
       /* toast handled in context */
     }
