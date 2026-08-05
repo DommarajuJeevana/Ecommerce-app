@@ -37,7 +37,7 @@ export default function Login() {
     if (loggedInUser.role === "admin") {
       navigate("/admin/dashboard");
     } else {
-      navigate(from);
+      navigate("/");
     }
     } catch {
       /* toast handled in context */

@@ -51,7 +51,11 @@ export default function Register() {
       if (newUser.role === "admin") {
         navigate("/admin/dashboard");
       } else {
-        navigate("/");
+        if (newUser.role === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/");
+        }
       }
     } catch {
       /* toast handled in context */

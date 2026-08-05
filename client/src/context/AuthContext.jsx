@@ -1,10 +1,14 @@
 import { createContext, useContext, useState } from "react";
-import API from "../api/axios";
+import axios from "axios";
 import toast from "react-hot-toast";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
+
+const API = axios.create({
+  baseURL: "https://ecommerce-app-otze.onrender.com/api",
+});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(
@@ -23,20 +27,15 @@ export const AuthProvider = ({ children }) => {
       );
 
       localStorage.setItem("token", data.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data.user)
-      );
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       setUser(data.user);
 
-      toast.success("Registration Successful");
+      toast.success("Account created!");
 
       return data.user;
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Registration failed"
-      );
+      toast.error(err.response?.data?.message || "Registration failed");
       throw err;
     } finally {
       setLoading(false);
@@ -47,33 +46,31 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      const { data } = await API.post(
-        "/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const { data } = await API.post("/auth/login", {
+        email,
+        password,
+      });
 
       localStorage.setItem("token", data.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data.user)
-      );
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       setUser(data.user);
 
-      toast.success("Login Successful");
+      toast.success("Welcome back!");
 
       return data.user;
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Login failed"
-      );
+      toast.error(err.response?.data?.message || "Login failed");
       throw err;
     } finally {
       setLoading(false);
     }
+  };
+
+  const forgotPassword = async (email) => {
+    await API.post("/auth/forgot-password", { email });
+
+    toast.success("Reset link sent.");
   };
 
   const logout = () => {
@@ -90,6 +87,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         login,
         register,
+        forgotPassword,
         logout,
       }}
     >
