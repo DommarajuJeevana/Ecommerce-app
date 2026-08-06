@@ -1,14 +1,10 @@
 import { createContext, useContext, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import toast from "react-hot-toast";
 
 export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
-
-const API = axios.create({
-  baseURL: "https://ecommerce-app-otze.onrender.com/api",
-});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(
@@ -21,7 +17,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      const { data } = await API.post(
+      const { data } = await api.post(
         "/auth/register",
         userData
       );
@@ -46,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      const { data } = await API.post("/auth/login", {
+      const { data } = await api.post("/auth/login", {
         email,
         password,
       });
@@ -68,9 +64,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   const forgotPassword = async (email) => {
-    await API.post("/auth/forgot-password", { email });
+    await api.post("/auth/forgot-password", { email });
 
     toast.success("Reset link sent.");
+  };
+
+  const updateProfile = async (updates) => {
+    const { data } = await api.put("/users/profile", updates);
+
+    localStorage.setItem("user", JSON.stringify(data));
+    setUser(data);
+
+    toast.success("Profile updated");
+
+    return data;
   };
 
   const logout = () => {
@@ -84,10 +91,12 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        isAuthenticated: !!user,
         loading,
         login,
         register,
         forgotPassword,
+        updateProfile,
         logout,
       }}
     >

@@ -28,8 +28,10 @@ const Navbar = () => {
 
         {user?.role === "admin" && (
           <>
-            <Link to="/admin-products">Products</Link>
-            <Link to="/admin-orders">Admin</Link>
+            <Link className="hover:text-gray-300" to="/admin/dashboard">Admin</Link>
+            <Link className="hover:text-gray-300" to="/admin/products">Products</Link>
+            <Link className="hover:text-gray-300" to="/admin/orders">Orders</Link>
+            <Link className="hover:text-gray-300" to="/admin/users">Users</Link>
           </>
         )}
 
