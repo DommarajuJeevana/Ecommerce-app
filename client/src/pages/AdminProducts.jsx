@@ -127,7 +127,7 @@ export default function AdminProducts() {
         </div>
         <select value={categoryFilter} onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }} className="input-field w-auto">
           <option value="">All Categories</option>
-          {["Laptops", "Phones", "Tablets", "Accessories", "Gaming", "Audio"].map((c) => <option key={c} value={c}>{c}</option>)}
+          {["Laptops", "Phones", "Electronics", "Accessories", "Gaming", "Audio"].map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
       </div>
 
