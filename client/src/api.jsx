@@ -27,4 +27,17 @@ api.interceptors.response.use(
   }
 );
 
+// The backend stores uploaded images (products, avatars) as paths like
+// "/uploads/xxx.jpg", relative to the API server. Since the frontend and
+// backend are on different domains in production, those paths need to be
+// prefixed with the backend's origin to actually load. Absolute URLs
+// (http/https) are left untouched.
+const API_ORIGIN = (import.meta.env.VITE_API_URL || "https://ecommerce-app-otze.onrender.com/api").replace(/\/api\/?$/, "");
+
+export const getImageUrl = (path) => {
+  if (!path) return "/placeholder.png";
+  if (/^https?:\/\//i.test(path) || path.startsWith("data:")) return path;
+  return `${API_ORIGIN}${path.startsWith("/") ? path : `/${path}`}`;
+};
+
 export default api;

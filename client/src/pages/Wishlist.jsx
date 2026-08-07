@@ -3,6 +3,7 @@ import { Heart, ShoppingCart, Trash2 } from "lucide-react";
 import { useWishlist } from "../context/WishlistContext";
 import { useCart } from "../context/CartContext";
 import { EmptyState } from "../components/UIHelpers";
+import { getImageUrl } from "../api";
 
 export default function Wishlist() {
   const { items, removeFromWishlist } = useWishlist();
@@ -30,7 +31,7 @@ export default function Wishlist() {
           return (
             <div key={p._id} className="card group flex flex-col overflow-hidden hover:shadow-hover">
               <Link to={`/product/${p._id}`} className="relative block aspect-square overflow-hidden bg-surface-soft">
-                <img src={p.images?.[0] || "/placeholder.png"} alt={p.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                <img src={getImageUrl(p.images?.[0])} alt={p.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
               </Link>
               <div className="flex flex-1 flex-col gap-2 p-4">
                 <Link to={`/product/${p._id}`} className="line-clamp-2 text-sm font-semibold text-ink-900 hover:text-brand-600">{p.name}</Link>

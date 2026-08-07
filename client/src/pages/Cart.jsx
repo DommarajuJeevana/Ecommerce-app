@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Minus, Plus, Trash2, Heart, Tag, ShoppingBag, Truck } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { getImageUrl } from "../api";
 import { EmptyState } from "../components/UIHelpers";
 
 export default function Cart() {
@@ -34,7 +35,7 @@ export default function Cart() {
             return (
               <div key={p._id} className="card flex gap-4 p-4">
                 <Link to={`/product/${p._id}`} className="h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-surface-soft">
-                  <img src={p.images?.[0] || "/placeholder.png"} alt={p.name} className="h-full w-full object-cover" />
+                  <img src={getImageUrl(p.images?.[0])} alt={p.name} className="h-full w-full object-cover" />
                 </Link>
                 <div className="flex flex-1 flex-col justify-between">
                   <div className="flex items-start justify-between gap-2">
@@ -72,7 +73,7 @@ export default function Cart() {
                   const p = item.product;
                   return (
                     <div key={p._id} className="card flex items-center gap-4 p-3">
-                      <img src={p.images?.[0] || "/placeholder.png"} alt={p.name} className="h-16 w-16 rounded-lg object-cover" />
+                      <img src={getImageUrl(p.images?.[0])} alt={p.name} className="h-16 w-16 rounded-lg object-cover" />
                       <div className="flex-1">
                         <p className="text-sm font-semibold text-ink-900">{p.name}</p>
                         <p className="text-xs text-ink-500">${p.price.toFixed(2)}</p>

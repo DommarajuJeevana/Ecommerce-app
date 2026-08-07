@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Camera, Save } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import api from "../api";
+import api, { getImageUrl } from "../api";
 import toast from "react-hot-toast";
 
 export default function Profile() {
@@ -11,7 +11,7 @@ export default function Profile() {
     street: user?.address?.street || "", city: user?.address?.city || "",
     state: user?.address?.state || "", zip: user?.address?.zip || "",
   });
-  const [avatarPreview, setAvatarPreview] = useState(user?.avatar || null);
+  const [avatarPreview, setAvatarPreview] = useState(user?.avatar ? getImageUrl(user.avatar) : null);
   const [avatarFile, setAvatarFile] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -29,7 +29,7 @@ export default function Profile() {
       if (avatarFile) {
         const fd = new FormData();
         fd.append("avatar", avatarFile);
-        await api.post("/users/avatar", fd, { headers: { "Content-Type": "multipart/form-data" } });
+        await api.post("/users/avatar", fd, { headers: { "Content-Type": undefined } });
       }
       await updateProfile({
         name: form.name, phone: form.phone,

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Users, Package, DollarSign, ShoppingBag, AlertTriangle, TrendingUp } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import api from "../api";
+import api, { getImageUrl } from "../api";
 import { StatusBadge } from "../components/UIHelpers";
 
 function StatCard({ icon: Icon, label, value, trend, color }) {
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
           <div className="flex flex-col gap-3">
             {lowStock.map((p) => (
               <div key={p._id} className="flex items-center gap-3">
-                <img src={p.images?.[0] || "/placeholder.png"} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                <img src={getImageUrl(p.images?.[0])} alt="" className="h-10 w-10 rounded-lg object-cover" />
                 <div className="flex-1">
                   <p className="line-clamp-1 text-xs font-semibold text-ink-900">{p.name}</p>
                   <p className="text-[11px] font-bold text-red-600">{p.stock} left</p>
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {topProducts.map((p) => (
             <div key={p._id} className="flex items-center gap-3 rounded-xl bg-surface-soft p-3">
-              <img src={p.images?.[0] || "/placeholder.png"} alt="" className="h-12 w-12 rounded-lg object-cover" />
+              <img src={getImageUrl(p.images?.[0])} alt="" className="h-12 w-12 rounded-lg object-cover" />
               <div>
                 <p className="line-clamp-1 text-xs font-semibold text-ink-900">{p.name}</p>
                 <p className="text-[11px] text-ink-500">{p.unitsSold} sold</p>

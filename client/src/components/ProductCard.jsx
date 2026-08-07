@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Heart, Star, ShoppingCart, Eye } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
+import { getImageUrl } from "../api";
 
 export default function ProductCard({ product, onQuickView }) {
   const { addToCart } = useCart();
@@ -47,10 +48,15 @@ export default function ProductCard({ product, onQuickView }) {
       <Link to={`/product/${_id}`} className="relative block aspect-square overflow-hidden bg-surface-soft">
         {!imgLoaded && <div className="skeleton absolute inset-0" />}
         <img
-          src={images[0] || "/placeholder.png"}
+          src={getImageUrl(images[0])}
           alt={name}
           loading="lazy"
           onLoad={() => setImgLoaded(true)}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "/placeholder.png";
+            setImgLoaded(true);
+          }}
           className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-110 ${imgLoaded ? "opacity-100" : "opacity-0"}`}
         />
         <button

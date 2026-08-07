@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Heart, Share2, Star, Minus, Plus, ShoppingCart, Zap, Truck, Edit2, Trash2 } from "lucide-react";
-import api from "../api";
+import api, { getImageUrl } from "../api";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useAuth } from "../context/AuthContext";
@@ -127,7 +127,7 @@ export default function ProductDetails() {
             className="relative aspect-square overflow-hidden rounded-2xl border border-surface-border bg-surface-soft"
           >
             <img
-              src={product.images?.[activeImg] || "/placeholder.png"}
+              src={getImageUrl(product.images?.[activeImg])}
               alt={product.name}
               style={zoomStyle}
               className="h-full w-full object-cover transition-transform duration-200"
@@ -141,7 +141,7 @@ export default function ProductDetails() {
                   onClick={() => setActiveImg(i)}
                   className={`h-18 w-18 shrink-0 overflow-hidden rounded-xl border-2 ${i === activeImg ? "border-brand-500" : "border-surface-border"}`}
                 >
-                  <img src={img} alt="" className="h-full w-full object-cover" />
+                  <img src={getImageUrl(img)} alt="" className="h-full w-full object-cover" />
                 </button>
               ))}
             </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Plus, Search, Edit2, Trash2, X, Upload, ChevronLeft, ChevronRight } from "lucide-react";
-import api from "../api";
+import api, { getImageUrl } from "../api";
 import toast from "react-hot-toast";
 
 const EMPTY_FORM = {
@@ -82,10 +82,10 @@ export default function AdminProducts() {
       if (editingId) fd.append("existingImages", JSON.stringify(existingImages));
 
       if (editingId) {
-        await api.put(`/admin/products/${editingId}`, fd, { headers: { "Content-Type": "multipart/form-data" } });
+        await api.put(`/admin/products/${editingId}`, fd, { headers: { "Content-Type": undefined } });
         toast.success("Product updated");
       } else {
-        await api.post("/admin/products", fd, { headers: { "Content-Type": "multipart/form-data" } });
+        await api.post("/admin/products", fd, { headers: { "Content-Type": undefined } });
         toast.success("Product created");
       }
       setShowModal(false);
@@ -146,7 +146,7 @@ export default function AdminProducts() {
             {products.map((p) => (
               <tr key={p._id} className="hover:bg-surface-soft/50">
                 <td className="flex items-center gap-3 px-5 py-3.5">
-                  <img src={p.images?.[0] || "/placeholder.png"} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                  <img src={getImageUrl(p.images?.[0])} alt="" className="h-10 w-10 rounded-lg object-cover" />
                   <div>
                     <p className="line-clamp-1 font-semibold text-ink-900">{p.name}</p>
                     <p className="text-xs text-ink-500">{p.brand}</p>
@@ -241,7 +241,7 @@ export default function AdminProducts() {
                   <div className="mb-2 flex flex-wrap gap-2">
                     {existingImages.map((img, i) => (
                       <div key={i} className="relative h-16 w-16">
-                        <img src={img} alt="" className="h-full w-full rounded-lg object-cover" />
+                        <img src={getImageUrl(img)} alt="" className="h-full w-full rounded-lg object-cover" />
                         <button type="button" onClick={() => setExistingImages(existingImages.filter((_, idx) => idx !== i))} className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-red-500 text-white">
                           <X size={11} />
                         </button>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Package, FileText, ChevronDown, Truck, CheckCircle2, Clock, XCircle } from "lucide-react";
-import api from "../api";
+import api, { getImageUrl } from "../api";
 import { StatusBadge } from "../components/UIHelpers";
 import { EmptyState } from "../components/UIHelpers";
 import toast from "react-hot-toast";
@@ -121,7 +121,7 @@ export default function Orders() {
                   <div className="flex flex-col gap-3">
                     {order.items?.map((item) => (
                       <div key={item.product?._id || item._id} className="flex items-center gap-3">
-                        <img src={item.product?.images?.[0] || "/placeholder.png"} alt="" className="h-14 w-14 rounded-lg object-cover" />
+                        <img src={getImageUrl(item.product?.images?.[0])} alt="" className="h-14 w-14 rounded-lg object-cover" />
                         <div className="flex-1">
                           <p className="text-sm font-semibold text-ink-900">{item.product?.name}</p>
                           <p className="text-xs text-ink-500">Qty: {item.quantity}</p>
