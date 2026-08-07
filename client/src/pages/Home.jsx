@@ -4,7 +4,7 @@ import {
   ChevronLeft, ChevronRight, Laptop, Smartphone, Tablet, Headphones,
   Gamepad2, Cable, Truck, ShieldCheck, RotateCcw, BadgeCheck, Send, Timer,
 } from "lucide-react";
-import api from "../api";
+import api, { getImageUrl } from "../api";
 import ProductCard from "../components/ProductCard";
 import { ProductCardSkeleton, EmptyState } from "../components/UIHelpers";
 import toast from "react-hot-toast";
@@ -18,6 +18,8 @@ const HERO_SLIDES = [
     cta: "Shop Now",
     ctaLink: "/search?category=Laptops",
     theme: "from-ink-900 via-ink-700 to-brand-700",
+    category: "Laptops",
+    icon: Laptop,
   },
   {
     id: 2,
@@ -27,6 +29,8 @@ const HERO_SLIDES = [
     cta: "Shop Now",
     ctaLink: "/search?category=Phones",
     theme: "from-ink-900 via-ink-700 to-brand-700",
+    category: "Phones",
+    icon: Smartphone,
   },
   {
     id: 3,
@@ -36,6 +40,8 @@ const HERO_SLIDES = [
     cta: "Learn More",
     ctaLink: "/search?category=Audio",
     theme: "from-ink-900 via-ink-700 to-brand-700",
+    category: "Audio",
+    icon: Headphones,
   },
 ];
 
@@ -112,6 +118,7 @@ export default function Home() {
   const [newArrivals, setNewArrivals] = useState([]);
   const [recommended, setRecommended] = useState([]);
   const [deals, setDeals] = useState([]);
+  const [heroImages, setHeroImages] = useState({});
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const countdown = useCountdown(8);
@@ -124,18 +131,28 @@ export default function Home() {
   const loadHome = useCallback(async () => {
     setLoading(true);
     try {
-      const [featuredRes, bestRes, newRes, recRes, dealsRes] = await Promise.allSettled([
+      const [featuredRes, bestRes, newRes, recRes, dealsRes, ...heroRes] = await Promise.allSettled([
         api.get("/products?featured=true&limit=10"),
         api.get("/products?sort=popularity&limit=8"),
         api.get("/products?sort=newest&limit=8"),
         api.get("/products/recommended?limit=8"),
         api.get("/products?deals=true&limit=6"),
+        ...HERO_SLIDES.map((s) => api.get(`/products?category=${s.category}&limit=1`)),
       ]);
       if (featuredRes.status === "fulfilled") setFeatured(featuredRes.value.data.products || featuredRes.value.data);
       if (bestRes.status === "fulfilled") setBestSellers(bestRes.value.data.products || bestRes.value.data);
       if (newRes.status === "fulfilled") setNewArrivals(newRes.value.data.products || newRes.value.data);
       if (recRes.status === "fulfilled") setRecommended(recRes.value.data.products || recRes.value.data);
       if (dealsRes.status === "fulfilled") setDeals(dealsRes.value.data.products || dealsRes.value.data);
+
+      const images = {};
+      heroRes.forEach((res, i) => {
+        if (res.status !== "fulfilled") return;
+        const list = res.value.data.products || res.value.data || [];
+        const img = list[0]?.images?.[0];
+        if (img) images[HERO_SLIDES[i].category] = img;
+      });
+      setHeroImages(images);
     } catch {
       /* individual sections fail gracefully via allSettled */
     } finally {
@@ -187,7 +204,18 @@ export default function Home() {
             </div>
             <div className="relative hidden aspect-square items-center justify-center lg:flex">
               <div className="absolute h-72 w-72 rounded-full bg-white/10 blur-3xl" />
-              <div className="relative h-80 w-80 rounded-3xl border border-white/20 bg-white/10 shadow-pop backdrop-blur-sm" />
+              <div className="relative grid h-80 w-80 place-items-center overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-pop backdrop-blur-sm">
+                {heroImages[active.category] ? (
+                  <img
+                    key={active.category}
+                    src={getImageUrl(heroImages[active.category])}
+                    alt={active.category}
+                    className="h-full w-full animate-fadeUp object-cover"
+                  />
+                ) : (
+                  <active.icon size={96} className="text-white/50" strokeWidth={1.25} />
+                )}
+              </div>
             </div>
           </div>
 
